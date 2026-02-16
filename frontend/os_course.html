@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Systems - JusLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; font-family: 'Poppins', sans-serif; background: #121212; color: #e0e0e0; }
+  header { background: #1e1e1e; color: #00e5ff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,255,255,0.2); }
+  header h1 { margin:0; font-size:24px; }
+  nav a { color: #00e5ff; margin-left: 20px; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+  nav a:hover { color: #ff4081; }
+  .banner { background: linear-gradient(135deg, #00e5ff, #ff4081); padding: 50px 20px; text-align: center; color: #121212; border-radius: 0 0 30px 30px; box-shadow: 0 5px 15px rgba(0,255,255,0.3);}
+  .banner h2 { font-size:36px; margin:0; }
+  .banner p { margin-top:10px; font-size:18px; }
+  .modules-container { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 40px; }
+  .accordion { background: #1c1c1c; cursor: pointer; padding: 18px; width: 90%; max-width: 900px; margin: 20px 0; border: none; text-align: left; font-size: 18px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); color: #00e5ff; transition: all 0.3s ease; position: relative; }
+  .accordion:hover { background:#222222; }
+  .accordion .checkmark { position: absolute; right: 20px; font-size: 20px; color: #76ff03; display: none; }
+  .panel { display: none; background: #1c1c1c; border-radius: 0 0 10px 10px; width: 90%; max-width: 900px; margin: 0 auto 20px auto; padding: 15px; box-shadow: inset 0 2px 6px rgba(0,255,255,0.1); }
+  .topic { background: #2a2a2a; padding: 12px 15px; margin: 10px 0; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; border-left: 4px solid #00e5ff; position: relative; }
+  .topic:hover { background: #333333; border-left-color: #ff4081; box-shadow: 0 0 8px #00e5ff; }
+  .topic .checkmark { position: absolute; right: 15px; font-size: 18px; color: #76ff03; display: none; }
+  .content-area { width: 90%; max-width: 900px; margin: 50px auto 50px auto; padding: 20px; background: #1c1c1c; border-radius: 12px; box-shadow: 0 6px 12px rgba(0,255,255,0.2); }
+  iframe { width: 100%; height: 400px; border-radius: 10px; margin-bottom: 15px; }
+  .btn { display: inline-block; padding: 10px 20px; background: #00e5ff; color: #121212; text-decoration: none; border-radius: 6px; transition: all 0.3s; }
+  .btn:hover { background: #ff4081; color: #fff; box-shadow: 0 0 12px #ff4081; }
+  form input[type="file"] { margin:10px 0; }
+  form button { background: #76ff03; color: #121212; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+  form button:hover { background: #b6ff00; box-shadow: 0 0 10px #76ff03; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JusLearn</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  <h2>Operating Systems</h2>
+  <p>Learn processes, memory, scheduling, and more</p>
+</div>
+
+<div class="modules-container">
+  <button class="accordion">Module 1: Process Management <span class="checkmark">✔</span></button>
+  <div class="panel">
+    <div class="topic" data-id="1">Topic 1: Process Scheduling <span class="checkmark">✔</span></div>
+    <div class="topic" data-id="2">Topic 2: Inter-process Communication <span class="checkmark">✔</span></div>
+  </div>
+
+  <button class="accordion">Module 2: Memory Management <span class="checkmark">✔</span></button>
+  <div class="panel">
+    <div class="topic" data-id="3">Topic 1: Paging & Segmentation <span class="checkmark">✔</span></div>
+    <div class="topic" data-id="4">Topic 2: Virtual Memory <span class="checkmark">✔</span></div>
+  </div>
+
+  <button class="accordion">Module 3: File Systems <span class="checkmark">✔</span></button>
+  <div class="panel">
+    <div class="topic" data-id="5">Topic 1: File Allocation <span class="checkmark">✔</span></div>
+    <div class="topic" data-id="6">Topic 2: Directory Structures <span class="checkmark">✔</span></div>
+  </div>
+</div>
+
+<div id="contentArea" class="content-area">
+  <h2>Select a topic to view content</h2>
+</div>
+
+<script>
+  // Accordion toggle
+  let acc = document.getElementsByClassName("accordion");
+  for (let i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      let panel = this.nextElementSibling;
+      panel.style.display = (panel.style.display === "block") ? "none" : "block";
+    });
+  }
+
+  const API_BASE_URL = "http://13.60.50.127:5000";
+
+  // Upload Assignment
+  async function uploadAssignment(event, topicId) {
+    event.preventDefault();
+    const userId = localStorage.getItem('userId');
+    const statusElement = document.getElementById(`uploadStatus-${topicId}`);
+    statusElement.innerText = "Uploading...";
+
+    if (!userId) {
+      statusElement.innerText = "Error: Please log in to upload an assignment.";
+      return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/upload/${userId}/${topicId}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      
+      if (res.ok) {
+        statusElement.innerText = `✅ Uploaded! ${data.message}`;
+        updateUI();
+      } else {
+        statusElement.innerText = `❌ Upload failed: ${data.message || res.statusText}`;
+      }
+    } catch (error) {
+      statusElement.innerText = "❌ Network error. Check server status.";
+      console.error('Upload Error:', error);
+    }
+  }
+
+  // Show topic content
+  function showContent(title, videoUrl, pdfUrl, topicId) {
+    const contentArea = document.getElementById("contentArea");
+    contentArea.innerHTML = `
+      <h2>${title}</h2>
+      <h3>📺 Video</h3>
+      <iframe 
+        src="${videoUrl}" 
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+      <h3>📑 Resource</h3>
+      <a href="${pdfUrl}" target="_blank" class="btn">Download Notes</a>
+      <h3>📂 Assignment</h3>
+      <form onsubmit="uploadAssignment(event, '${topicId}')">
+        <input type="file" name="assignment" required>
+        <button type="submit">Upload</button>
+      </form>
+      <p id="uploadStatus-${topicId}"></p>
+    `;
+    contentArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Fetch user progress from backend
+  async function updateUI() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      document.querySelectorAll(".checkmark").forEach(check => check.style.display = "none");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/progress/${userId}`);
+      if (!res.ok) throw new Error('Failed to fetch progress');
+
+      const progressData = await res.json();
+      const completedTopics = new Map(progressData
+        .filter(topic => topic.completed === 1)
+        .map(topic => [topic.topicId.toString(), true])
+      );
+
+      // Checkmarks for topics
+      document.querySelectorAll(".topic").forEach(topic => {
+        let id = topic.getAttribute("data-id");
+        let check = topic.querySelector(".checkmark");
+        if (check) check.style.display = completedTopics.has(id) ? "inline" : "none";
+      });
+
+      // Checkmarks for modules
+      document.querySelectorAll(".accordion").forEach(acc => {
+        let panel = acc.nextElementSibling;
+        let topics = panel.querySelectorAll(".topic");
+        let allDone = Array.from(topics).every(t => completedTopics.has(t.getAttribute("data-id")));
+        let check = acc.querySelector(".checkmark");
+        if (check) check.style.display = allDone ? "inline" : "none";
+      });
+    } catch (error) {
+      console.error("Could not load user progress:", error);
+    }
+  }
+
+  // Topic mapping (1–6)
+  document.querySelectorAll(".topic").forEach(topic => {
+    topic.addEventListener("click", () => {
+      let title = topic.innerText.replace("✔", "").trim();
+      let topicId = topic.getAttribute("data-id");
+      let videoUrl = "";
+      let pdfUrl = "sample.pdf";
+
+      // ✅ Updated YouTube videos (your provided links)
+      if (topicId === "1") {videoUrl = "https://www.youtube.com/embed/O2tV9q6784k?si=nT2t_nvufqePpR1P";pdfUrl="procsch.pdf";}
+      if (topicId === "2") {videoUrl = "https://www.youtube.com/embed/Y2mDwW2pMv4?si=Jbf27X92UB235ShG";pdfUrl="interproc.pdf";}
+      if (topicId === "3") {videoUrl = "https://www.youtube.com/embed/gTtfq610s48?si=WYGkD5qA7O6UE75T";pdfUrl="pagseg.pdf";}
+      if (topicId === "4") {videoUrl = "https://www.youtube.com/embed/yS1Vz2XprpY?si=8ekz0IVBGvgOncuX";pdfUrl="virmem.pdf";}
+      if (topicId === "5") {videoUrl = "https://www.youtube.com/embed/B1_er2nGKao?si=SAoRbSu470GuHpfL";pdfUrl="filealloc.pdf";}
+      if (topicId === "6") {videoUrl = "https://www.youtube.com/embed/rEsCcHbmRtk?si=CNPy5VgeIT8r1X8W";pdfUrl="dirstr.pdf";}
+
+      showContent(title, videoUrl, pdfUrl, topicId);
+    });
+  });
+
+  // Load progress when page opens
+  updateUI();
+</script>
+
+</body>
+</html>

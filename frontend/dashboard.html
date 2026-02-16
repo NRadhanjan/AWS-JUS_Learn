@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JusLearn - Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #00e5ff, #ff4081);
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #121212;
+    }
+
+    .dashboard {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .course {
+      margin-bottom: 30px;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,229,255,0.3);
+    }
+
+    .course h2 {
+      color: #00e5ff;
+      margin-bottom: 15px;
+    }
+
+    .topic {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #2b2b2b;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+
+    .topic span {
+      font-size: 16px;
+    }
+
+    .upload-btn {
+      background: #ff4081;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .upload-btn:hover {
+      background: #ff77a9;
+    }
+
+    .status {
+      font-size: 14px;
+      margin-left: 10px;
+      color: #76ff03;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>📊 JusLearn Dashboard</header>
+  <div class="dashboard">
+
+    <div class="course">
+      <h2>Operating Systems</h2>
+      <div class="topic">
+        <span>Process Management</span>
+        <div>
+          <input type="file" id="os1" style="display:none" onchange="markCompleted(this, 'status-os1')">
+          <button class="upload-btn" onclick="document.getElementById('os1').click()">Upload Assignment</button>
+          <span id="status-os1" class="status"></span>
+        </div>
+      </div>
+      <div class="topic">
+        <span>Memory Management</span>
+        <div>
+          <input type="file" id="os2" style="display:none" onchange="markCompleted(this, 'status-os2')">
+          <button class="upload-btn" onclick="document.getElementById('os2').click()">Upload Assignment</button>
+          <span id="status-os2" class="status"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="course">
+      <h2>Database Management Systems</h2>
+      <div class="topic">
+        <span>ER Model</span>
+        <div>
+          <input type="file" id="db1" style="display:none" onchange="markCompleted(this, 'status-db1')">
+          <button class="upload-btn" onclick="document.getElementById('db1').click()">Upload Assignment</button>
+          <span id="status-db1" class="status"></span>
+        </div>
+      </div>
+      <div class="topic">
+        <span>SQL Queries</span>
+        <div>
+          <input type="file" id="db2" style="display:none" onchange="markCompleted(this, 'status-db2')">
+          <button class="upload-btn" onclick="document.getElementById('db2').click()">Upload Assignment</button>
+          <span id="status-db2" class="status"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="course">
+      <h2>Computer Networks</h2>
+      <div class="topic">
+        <span>TCP/IP Model</span>
+        <div>
+          <input type="file" id="cn1" style="display:none" onchange="markCompleted(this, 'status-cn1')">
+          <button class="upload-btn" onclick="document.getElementById('cn1').click()">Upload Assignment</button>
+          <span id="status-cn1" class="status"></span>
+        </div>
+      </div>
+      <div class="topic">
+        <span>Routing Algorithms</span>
+        <div>
+          <input type="file" id="cn2" style="display:none" onchange="markCompleted(this, 'status-cn2')">
+          <button class="upload-btn" onclick="document.getElementById('cn2').click()">Upload Assignment</button>
+          <span id="status-cn2" class="status"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function markCompleted(input, statusId) {
+      if (input.files.length > 0) {
+        document.getElementById(statusId).innerText = "✔ Completed | Marks: 10/10";
+      }
+    }
+  </script>
+</body>
+</html>

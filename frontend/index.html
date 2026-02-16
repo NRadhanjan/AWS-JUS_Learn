@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JusLearn - Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#121212;
+    color:#e0e0e0;
+  }
+  header {
+    background:#1e1e1e;
+    color:#00e5ff;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 10px rgba(0,255,255,0.2);
+  }
+  header h1 { margin:0; font-size:24px; }
+  nav a {
+    color:#00e5ff;
+    margin-left:20px;
+    text-decoration:none;
+    font-weight:500;
+    transition:color 0.3s;
+  }
+  nav a:hover { color:#ff4081; }
+
+  .banner {
+    background:linear-gradient(135deg,#00e5ff,#ff4081);
+    padding:60px 20px;
+    text-align:center;
+    color:#121212;
+    border-radius:0 0 30px 30px;
+    box-shadow:0 5px 15px rgba(0,255,255,0.3);
+  }
+  .banner h2 { font-size:36px; margin:0; }
+  .banner p { margin-top:10px; font-size:18px; }
+
+  .courses-container {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:30px;
+    margin:50px auto;
+    max-width:1200px;
+  }
+
+  .course-card {
+    background:#1c1c1c;
+    width:280px;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 6px 12px rgba(0,255,255,0.2);
+    transition:all 0.3s ease;
+    cursor:pointer;
+  }
+  .course-card:hover {
+    background:#222222;
+    box-shadow:0 0 12px #00e5ff;
+  }
+  .course-card h3 { margin-bottom:15px; color:#00e5ff; }
+  .course-card p { margin-bottom:20px; color:#e0e0e0; }
+  .btn {
+    display:inline-block;
+    padding:10px 20px;
+    background:#00e5ff;
+    color:#121212;
+    text-decoration:none;
+    border-radius:6px;
+    transition:all 0.3s;
+  }
+  .btn:hover { background:#ff4081; color:#fff; box-shadow:0 0 12px #ff4081; }
+
+  @media (max-width:768px){
+    header { flex-direction:column; text-align:center; }
+    nav { margin-top:10px; }
+    nav a { margin:0 10px; }
+    .courses-container { flex-direction:column; align-items:center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JusLearn</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  <h2>Welcome to JusLearn</h2>
+  <p>Your one-stop hub for learning Operating Systems, DBMS, and Computer Networks</p>
+</div>
+
+<div class="courses-container">
+  <div class="course-card">
+    <h3>Operating Systems</h3>
+    <p>Learn processes, memory, scheduling, and more</p>
+    <a href="os_course.html" class="btn">Go to Course</a>
+  </div>
+
+  <div class="course-card">
+    <h3>DBMS</h3>
+    <p>Learn tables, relationships, queries, and normalization</p>
+    <a href="dbms_course.html" class="btn">Go to Course</a>
+  </div>
+
+  <div class="course-card">
+    <h3>Computer Networks</h3>
+    <p>Learn networking, protocols, and communication</p>
+    <a href="cn_course.html" class="btn">Go to Course</a>
+  </div>
+</div>
+
+</body>
+</html>

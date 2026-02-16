@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - JusLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; font-family: 'Poppins', sans-serif; background: #121212; color: #e0e0e0; }
+  header { background: #1e1e1e; color: #00e5ff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,255,255,0.2); }
+  header h1 { margin:0; font-size:24px; }
+  nav a { color:#00e5ff; margin-left:20px; text-decoration:none; font-weight:500; transition:color 0.3s; }
+  nav a:hover { color:#ff4081; }
+  .banner { background: linear-gradient(135deg, #00e5ff, #ff4081); padding: 50px 20px; text-align: center; color: #121212; border-radius: 0 0 30px 30px; box-shadow: 0 5px 15px rgba(0,255,255,0.3); }
+  .banner h2 { font-size:36px; margin:0; }
+  .banner p { margin-top:10px; font-size:18px; }
+  .login-container { width: 90%; max-width: 400px; margin: 50px auto; background: #1c1c1c; padding: 30px; border-radius: 12px; box-shadow: 0 6px 12px rgba(0,255,255,0.2); }
+  .login-container h3 { text-align:center; margin-bottom:20px; color:#00e5ff; }
+  .login-container input { width: 100%; padding: 12px; margin: 10px 0; border-radius:6px; border:none; outline:none; font-size:16px; }
+  .login-container button { width:100%; padding:12px; margin-top:15px; border:none; border-radius:6px; font-size:16px; background:#00e5ff; color:#121212; cursor:pointer; transition: all 0.3s; }
+  .login-container button:hover { background:#ff4081; color:#fff; box-shadow:0 0 12px #ff4081; }
+  .login-container .switch { text-align:center; margin-top:15px; color:#00e5ff; cursor:pointer; }
+  .login-container .switch:hover { color:#ff4081; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JusLearn</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  <h2>JusLearn</h2>
+  <p>Access your courses, assignments, and resources</p>
+</div>
+
+<div class="login-container" id="loginBox">
+  <h3>Sign In</h3>
+  <form onsubmit="signIn(event)">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button type="submit">Sign In</button>
+  </form>
+  <div class="switch" onclick="toggleForm()">Don't have an account? Sign Up</div>
+</div>
+
+<div class="login-container" id="signupBox" style="display:none;">
+  <h3>Sign Up</h3>
+  <form onsubmit="signUp(event)">
+    <input type="text" id="signupUsername" placeholder="Username" required> 
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+    <button type="submit">Sign Up</button>
+  </form>
+  <div class="switch" onclick="toggleForm()">Already have an account? Sign In</div>
+</div>
+
+<script>
+const API_BASE_URL = "http://13.60.50.127:5000";
+function toggleForm() {
+  const login = document.getElementById('loginBox');
+  const signup = document.getElementById('signupBox');
+  if(login.style.display === 'none') {
+    login.style.display = 'block';
+    signup.style.display = 'none';
+  } else {
+    login.style.display = 'none';
+    signup.style.display = 'block';
+  }
+}
+
+async function signIn(event) {
+  event.preventDefault(); 
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  // BEFORE: await fetch("http://localhost:5000/api/login", { ...
+  const res = await fetch(`${API_BASE_URL}/api/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  alert(data.message);
+
+  if(res.ok){
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("username", data.username);
+    window.location.href = "index.html"; 
+  }
+}
+
+async function signUp(event) {
+  event.preventDefault(); 
+  // FIXED: Getting value from 'signupUsername'
+  const username = document.getElementById("signupUsername").value; 
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+// BEFORE: await fetch("http://localhost:5000/api/signup", { ...
+  const res = await fetch(`${API_BASE_URL}/api/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    // FIXED: Sending 'username' field to match backend
+    body: JSON.stringify({ username, email, password }) 
+  });
+
+  const data = await res.json();
+  alert(data.message);
+
+  if(res.ok){
+    toggleForm(); 
+  }
+}
+</script>
+
+</body>
+</html>

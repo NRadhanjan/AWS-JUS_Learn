@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database Management System - JusLearn</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; font-family:'Poppins',sans-serif; background:#121212; color:#e0e0e0; }
+  header { background:#1e1e1e; color:#00e5ff; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 3px 10px rgba(0,255,255,0.2); }
+  header h1{margin:0; font-size:24px;}
+  nav a { color:#00e5ff; margin-left:20px; text-decoration:none; font-weight:500; transition:color 0.3s; }
+  nav a:hover { color:#ff4081; }
+  .banner { background:linear-gradient(135deg, #00e5ff, #ff4081); padding:50px 20px; text-align:center; color:#121212; border-radius:0 0 30px 30px; box-shadow:0 5px 15px rgba(0,255,255,0.3);}
+  .banner h2 { font-size:36px; margin:0; }
+  .banner p { margin-top:10px; font-size:18px; }
+  .modules-container { width:100%; display:flex; flex-direction:column; align-items:center; margin-top:40px; }
+  .accordion { background:#1c1c1c; cursor:pointer; padding:18px; width:90%; max-width:900px; margin:20px 0; border:none; text-align:left; font-size:18px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.5); color:#00e5ff; transition:all 0.3s ease; position: relative; }
+  .accordion:hover { background:#222222; }
+  .accordion .checkmark { position: absolute; right: 20px; font-size: 20px; color: #76ff03; display: none; }
+  .panel { display:none; background:#1c1c1c; border-radius:0 0 10px 10px; width:90%; max-width:900px; margin:0 auto 20px auto; padding:15px; box-shadow:inset 0 2px 6px rgba(0,255,255,0.1);}
+  .topic { background:#2a2a2a; padding:12px 15px; margin:10px 0; border-radius:6px; cursor:pointer; transition:all 0.3s ease; border-left:4px solid #00e5ff; position: relative; }
+  .topic:hover { background:#333333; border-left-color:#ff4081; box-shadow:0 0 8px #00e5ff; }
+  .topic .checkmark { position: absolute; right: 15px; font-size: 18px; color: #76ff03; display: none; }
+  .content-area { width:90%; max-width:900px; margin:50px auto 50px auto; padding:20px; background:#1c1c1c; border-radius:12px; box-shadow:0 6px 12px rgba(0,255,255,0.2);}
+  iframe { width:100%; height:400px; border-radius:10px; margin-bottom:15px; border:none; }
+  .btn { display:inline-block; padding:10px 20px; background:#00e5ff; color:#121212; text-decoration:none; border-radius:6px; transition:all 0.3s; }
+  .btn:hover { background:#ff4081; color:#fff; box-shadow:0 0 12px #ff4081; }
+  form input[type="file"] { margin:10px 0; }
+  form button { background:#76ff03; color:#121212; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; transition:all 0.3s; }
+  form button:hover { background:#b6ff00; box-shadow:0 0 10px #76ff03; }
+  @media (max-width:768px){ 
+    header { flex-direction:column; text-align:center; } 
+    nav { margin-top:10px; } 
+    nav a { margin:0 10px; }
+    iframe { height:250px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JusLearn</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<div class="banner">
+  <h2>Database Management System (DBMS)</h2>
+  <p>Learn tables, relationships, queries, and normalization</p>
+</div>
+
+<div class="modules-container">
+  <button class="accordion">Module 1: Relational Databases <span class="checkmark">✔</span></button>
+  <div class="panel">
+    <div class="topic" data-id="7">Topic 1: ER Diagrams <span class="checkmark">✔</span></div>
+    <div class="topic" data-id="8">Topic 2: Normalization <span class="checkmark">✔</span></div>
+  </div>
+
+  <button class="accordion">Module 2: SQL Queries <span class="checkmark">✔</span></button>
+  <div class="panel">
+    <div class="topic" data-id="9">Topic 1: Select Queries <span class="checkmark">✔</span></div>
+    <div class="topic" data-id="10">Topic 2: Joins & Subqueries <span class="checkmark">✔</span></div>
+  </div>
+</div>
+
+<div id="contentArea" class="content-area">
+  <h2>Select a topic to view content</h2>
+</div>
+
+<script>
+  // Accordion toggle logic
+  let acc = document.getElementsByClassName("accordion");
+  for(let i=0;i<acc.length;i++){
+    acc[i].addEventListener("click",function(){
+      this.classList.toggle("active");
+      let panel = this.nextElementSibling;
+      panel.style.display = (panel.style.display==="block")?"none":"block";
+    });
+  }
+
+  const API_BASE_URL = "http://13.60.50.127:5000";
+
+  // Function to handle assignment upload to the backend
+  async function uploadAssignment(event, topicId) {
+    event.preventDefault();
+    const userId = localStorage.getItem('userId');
+    const statusElement = document.getElementById(`uploadStatus-${topicId}`);
+    statusElement.innerText = "Uploading...";
+
+    if (!userId) {
+      statusElement.innerText = "Error: Please log in to upload an assignment.";
+      return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/upload/${userId}/${topicId}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      
+      if (res.ok) {
+        statusElement.innerText = `✅ Uploaded! ${data.message}`;
+        updateUI(); // Refresh UI to show checkmark
+      } else {
+        statusElement.innerText = `❌ Upload failed: ${data.message || res.statusText}`;
+      }
+    } catch (error) {
+      statusElement.innerText = "❌ Network error. Check server status.";
+      console.error('Upload Error:', error);
+    }
+  }
+
+  // Show content with upload
+  function showContent(title, videoUrl, pdfUrl, topicId){
+    const contentArea = document.getElementById("contentArea");
+    contentArea.innerHTML=`
+      <h2>${title}</h2>
+      <h3>📺 Video</h3>
+      <iframe src="${videoUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <h3>📑 Resource</h3>
+      <a href="${pdfUrl}" target="_blank" class="btn">Download Notes</a>
+      <h3>📂 Assignment</h3>
+      <form id="assignmentForm" onsubmit="uploadAssignment(event, '${topicId}')">
+        <input type="file" name="assignment" required>
+        <button type="submit">Upload</button>
+      </form>
+      <p id="uploadStatus-${topicId}"></p>
+    `;
+    contentArea.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // Update UI based on API call
+  async function updateUI() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        document.querySelectorAll(".checkmark").forEach(check => check.style.display = "none");
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/progress/${userId}`);
+        if (!res.ok) throw new Error('Failed to fetch progress');
+        
+        const progressData = await res.json();
+        const completedTopics = new Map(progressData
+            .filter(topic => topic.completed === 1)
+            .map(topic => [topic.topicId.toString(), true])
+        );
+
+        // Update Checkmarks for individual topics
+        document.querySelectorAll(".topic").forEach(topic => {
+            let id = topic.getAttribute("data-id");
+            let check = topic.querySelector(".checkmark");
+            if (check) {
+                check.style.display = completedTopics.has(id) ? "inline" : "none";
+            }
+        });
+        
+        // Update Checkmarks for modules (accordions)
+        document.querySelectorAll(".accordion").forEach(acc => {
+            let panel = acc.nextElementSibling;
+            let topics = panel.querySelectorAll(".topic");
+            let allDone = true;
+            
+            topics.forEach(topic => {
+                let id = topic.getAttribute("data-id");
+                if (!completedTopics.has(id)) {
+                    allDone = false;
+                }
+            });
+            
+            let check = acc.querySelector(".checkmark");
+            check.style.display = allDone ? "inline" : "none";
+        });
+        
+    } catch (error) {
+        console.error("Could not load user progress:", error);
+    }
+  }
+  
+  // Attach onclicks to topics
+  document.querySelectorAll(".topic").forEach(topic => {
+    topic.addEventListener("click", () => {
+      let title = topic.innerText.replace("✔", "").trim();
+      let topicId = topic.getAttribute("data-id");
+      
+      let videoUrl = ""; 
+      let pdfUrl = "sample.pdf"; 
+      
+      // Map Topic IDs (7-10) to content with new YouTube embeds
+      if (topicId === "7") { 
+        videoUrl="https://www.youtube.com/embed/LowjDtiNlk4?si=OqldOQC7wd1BHwpf"; 
+        pdfUrl="erdia.pdf"; 
+      }
+      if (topicId === "8") { 
+        videoUrl="https://www.youtube.com/embed/GFQaEYEc8_8?si=isBpfnEizrHI4Ksv"; 
+        pdfUrl="normalization.pdf"; 
+      }
+      if (topicId === "9") { 
+        videoUrl="https://www.youtube.com/embed/TDKoTItCVMU?si=4zxKnub-kOVrj2GE"; 
+        pdfUrl="select.pdf"; 
+      }
+      if (topicId === "10") { 
+        videoUrl="https://www.youtube.com/embed/4_Q2pnmo1tM?si=wmQ7-FNkvM0W_mzx"; 
+        pdfUrl="joins.pdf"; 
+      }
+
+      showContent(title, videoUrl, pdfUrl, topicId);
+    });
+  });
+
+  // Load UI state on page load
+  updateUI();
+</script>
+
+</body>
+</html>
